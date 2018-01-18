@@ -1,0 +1,10 @@
+Flask==0.12
+Flask-Cors==3.0.2
+Flask-RESTful==0.3.5
+flask-restful-swagger-2==0.31
+Jinja2==2.9.6
+pandas==0.19.2
+swagger-parser==0.1.11
+swagger-spec-validator==2.0.2
+swagger-tester==0.2.7
+Werkzeug==0.11.15
