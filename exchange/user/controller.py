@@ -1,15 +1,20 @@
-from flask import json
+#import exchange
 
-DATA = [{"name": "Ernest"}, {"name": "Arnoldo"}]
+DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
+#DATA = {'loucura'}
 
 def get():
 
+    #response = exchange.app.response_class(response=json.dumps(DATA), status=200, mimetype='users/json')
+
     return DATA
 
+
 def post(name):
+    i = len(DATA)+1
 
-    DATA.append({"name": name})
+    DATA.append({"id": i, "name": name})
 
-    return [{"name":name}]
+    return [{"id": i, "name": name}]
 
 # Entender porque quando eu faço um POST, depois se eu fizer GET de novo ele atualiza DATA

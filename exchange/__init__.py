@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
+
 import json
 
 app = Flask(__name__)
@@ -16,8 +17,6 @@ def index():
 
     ind = [users, stocks, offers]
 
-    print('index page')
-
     return jsonify(ind)
 
 
@@ -25,14 +24,22 @@ def index():
 def get():
     import exchange.user.controller
 
-    return jsonify(exchange.user.controller.get())
+    if jsonify(exchange.user.controller.get()):
+        return jsonify(exchange.user.controller.get()), 200
+    else:
+        return 404
 
 
 @app.route('/users/<string:name>')
 def post(name):
     import exchange.user.controller
 
-    return jsonify(exchange.user.controller.post(name))
+    return jsonify(exchange.user.controller.post(name)), 200
+
+
+    #@app.route('/index')
+    #def ind():
+    #    return render_template('index.html')
 
 
 def run():
