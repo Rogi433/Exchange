@@ -14,12 +14,8 @@ def get():
 
 
 def get_one(var):
-    if isinstance(var, int):
-        if var < len(DATA):
-            return jsonify(DATA[var-1])
-        else:
-            return False
-    elif isinstance(var, str):
+    if isinstance(var, str):
+        print('tentativa 1')
         i = 0; j = len(DATA)+1
         while i < len(DATA):
             if var == DATA[i]["name"]:
@@ -30,7 +26,12 @@ def get_one(var):
         if j < len(DATA):
             return jsonify(DATA[j])
         else:
-            return False
+            if int(var) < len(DATA):
+                print('etapa 4')
+                return jsonify(DATA[int(var) - 1])
+            else:
+                print('tentativa 2')
+                return False
     else:
         return False
 
@@ -75,3 +76,9 @@ def post(name):
 #    If the mimetype is application/json this will contain the parsed JSON data. Otherwise this will be None.
 #
 #    The get_json() method should be used instead.
+
+#for item in data:
+#   for key, value in args.item():
+#       if hasattr(item, key) and item.get(key) == value:
+#           return item
+#       return False

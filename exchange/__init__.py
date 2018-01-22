@@ -5,13 +5,15 @@ app = Flask(__name__)
 
 
 @app.errorhandler(404)
-def not_found(error=None):
+def not_found(code=None, msg=None):
+    if msg is None:
+        msg = 'Not Found: ' + request.url
     message = {
-            'status': 404,
-            'message': 'Not Found: ' + request.url,
+        'status': code,
+        'message': msg,
     }
     resp = jsonify(message)
-    resp.status_code = 404
+    resp.status_code = code
 
     return resp
 
@@ -35,23 +37,24 @@ def root():
 def get_users():
     import exchange.user.controller
 
-    if 'name' in request.args:
-        user = exchange.user.controller.get_one(request.args['name'])
-        if user:
-            return user
-        else:
-            return not_found()
-    elif 'id' in request.args:
+    if 'id' in request.args:
+        print('etapa 1')
         user = exchange.user.controller.get_one(request.args['id'])
         if user:
             return user
         else:
-            return not_found()
+            return not_found(404)
+    elif 'name' in request.args:
+        user = exchange.user.controller.get_one(request.args['name'])
+        if user:
+            return user
+        else:
+            return not_found(404)
     else:
         return exchange.user.controller.get()
 
 
-@app.route('/users/<string:name>')
+@app.route('/users/<string:name>', methods=['POST'])
 def post_users(name):
     import exchange.user.controller
 
@@ -70,6 +73,8 @@ def get_offers():
     import exchange.offer.controller
 
     return jsonify(exchange.offer.controller.get()), 200
+
+
 # Como fazer uma route que recebe mais de um parametro para criar uma nova offer (metodo POST)
 
 
@@ -86,14 +91,12 @@ def api_hello():
 
     return resp
 
-
-
-    #@app.route('/index')
-    #def ind():
+    # @app.route('/index')
+    # def ind():
     #    return render_template('index.html')
 
-    #@app.route('/echo', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-    #def api_echo():
+    # @app.route('/echo', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+    # def api_echo():
     #    if request.method == 'GET':
     #        return "ECHO: GET\n"
     #
@@ -108,6 +111,7 @@ def api_hello():
     #
     #    elif request.method == 'DELETE':
     #        return "ECHO: DELETE"
+
 
 def run():
     app.run(debug=True)
