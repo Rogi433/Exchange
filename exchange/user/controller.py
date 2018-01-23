@@ -1,9 +1,7 @@
 from flask import Flask, jsonify
-#import exchange
 import json
 
 DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
-#DATA = {'erro'}
 
 
 def get():
@@ -15,7 +13,6 @@ def get():
 
 def get_one(var):
     if isinstance(var, str):
-        print('tentativa 1')
         i = 0; j = len(DATA)+1
         while i < len(DATA):
             if var == DATA[i]["name"]:
@@ -26,15 +23,17 @@ def get_one(var):
         if j < len(DATA):
             return jsonify(DATA[j])
         else:
-            if int(var) < len(DATA):
-                print('etapa 4')
+            if int(var) <= len(DATA):
                 return jsonify(DATA[int(var) - 1])
             else:
-                print('tentativa 2')
                 return False
     else:
         return False
 
+
+# Implement later the delete protocol. When you create a new user you have to check the list for
+#other users that where deleted and the you update their information. Otherwise you just create
+#a new user the old way
 
 def post(name):
     i = len(DATA)+1
@@ -42,6 +41,11 @@ def post(name):
     DATA.append({"id": i, "name": name})
 
     return jsonify([{"id": i, "name": name}]), 201
+
+
+def delete():
+
+    return 200
 
 # Entender porque quando eu faço um POST, depois se eu fizer GET de novo ele atualiza DATA
 #
