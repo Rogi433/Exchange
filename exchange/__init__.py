@@ -42,7 +42,7 @@ def get_users():
         else:
             return not_found(404)
     else:
-        return exchange.user.controller.get()
+        return exchange.user.controller.get().to_json, 200
 
 
 @app.route('/users/<string:name>', methods=['POST'])

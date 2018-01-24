@@ -1,21 +1,26 @@
 from flask import Flask, jsonify
+import exchange.user.model
 import json
+#DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
 
-DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
+DATA = exchange.user.model.ModelList()
+u1 = exchange.user.model.User(1, 'Ernesto')
+u2 = exchange.user.model.User(2, 'Arnaldo')
+u3 = exchange.user.model.User(3, 'Fred')
+
+DATA.append(u1.to_json())
+DATA.append(u2.to_json())
 
 
 def get():
-    if jsonify(DATA):
-        return jsonify(DATA), 200
-    else:
-        return 404
+        return DATA
 
 
 def get_one(var):
     if isinstance(var, str):
         i = 0; j = len(DATA)+1
         while i < len(DATA):
-            if var == DATA[i]["name"]:
+            if var == DATA[i]['name']:
                 j = i
                 i = len(DATA)
             else:
@@ -35,12 +40,14 @@ def get_one(var):
 #other users that where deleted and the you update their information. Otherwise you just create
 #a new user the old way
 
+
 def post(name):
     i = len(DATA)+1
 
-    DATA.append({"id": i, "name": name})
+    n_user = exchange.user.model.User(i, name)
+    DATA.append(n_user.to_json())
 
-    return jsonify([{"id": i, "name": name}]), 201
+    return jsonify([{"id": i, "name": n_user.name}]), 201
 
 
 def delete():
