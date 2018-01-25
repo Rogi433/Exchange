@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
 import exchange.user.model
+import exchange.utils.model_utils
 import json
 #DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
 
-DATA = exchange.user.model.ModelList()
+DATA = exchange.utils.model_utils.ModelList()
 u1 = exchange.user.model.User(1, 'Ernesto')
 u2 = exchange.user.model.User(2, 'Arnaldo')
 u3 = exchange.user.model.User(3, 'Fred')
@@ -13,7 +14,7 @@ DATA.append(u2.to_json())
 
 
 def get():
-        return DATA
+    return DATA.to_json()
 
 
 def get_one(var):
@@ -50,8 +51,9 @@ def post(name):
     return jsonify([{"id": i, "name": n_user.name}]), 201
 
 
-def delete():
-
+def delete(id):
+    user = DATA[id]
+    user.delete()
     return 200
 
 # Entender porque quando eu faço um POST, depois se eu fizer GET de novo ele atualiza DATA

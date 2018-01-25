@@ -26,30 +26,41 @@ def root():
     return jsonify(ind)
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/users', methods=['GET', 'POST', 'DELETE'])
 def get_users():
     import exchange.user.controller
-    if 'id' in request.args:
-        user = exchange.user.controller.get_one(request.args['id'])
-        if user:
-            return user
+
+    if request.method == 'GET':
+        if 'id' in request.args:
+            user = exchange.user.controller.get_one(request.args['id'])
+            if user:
+                return user
+            else:
+                return not_found(404)
+        elif 'name' in request.args:
+            user = exchange.user.controller.get_one(request.args['name'])
+            if user:
+                return user
+            else:
+                return not_found(404)
         else:
-            return not_found(404)
-    elif 'name' in request.args:
-        user = exchange.user.controller.get_one(request.args['name'])
-        if user:
-            return user
-        else:
-            return not_found(404)
-    else:
-        return exchange.user.controller.get().to_json, 200
+            return exchange.user.controller.get(), 200
 
+    elif request.method == 'POST':
+        import exchange.user.model
+        if not request.json and not exchange.user.model.User.check_permitted(request.json, exchange.user.model.User.permitted_fields):
+            abort(400)
+        name = request.json['name']
 
-@app.route('/users/<string:name>', methods=['POST'])
-def post_users(name):
-    import exchange.user.controller
+        return exchange.user.controller.post(name)
 
-    return exchange.user.controller.post(name)
+    elif request.method == 'DELETE':
+        import exchange.user.model
+        if not request.json and not exchange.user.model.User.check_permitted(request.json, exchange.user.model.User.permitted_fields):
+            abort(400)
+        ide = request.json['id']
+
+        return exchange.user.controller.delete(ide)
 
 
 @app.route('/stocks', methods=['GET'])

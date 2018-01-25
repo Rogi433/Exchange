@@ -3,11 +3,13 @@ from flask import jsonify
 
 class Model(object):
     def to_json(self):
-        return self.__dict__
+        return jsonify(self.__dict__)
 
-    def check_permitted(self, dict):
-    # INCOMPLETA
-        return dict
+    def check_permitted(self, data, permitted_fields):
+        for key, value in data.items():
+            if key not in permitted_fields:
+                return False
+        return True
 
 
 class ModelList(list):

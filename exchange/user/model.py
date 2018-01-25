@@ -1,21 +1,9 @@
 from flask import jsonify
+import exchange.utils.model_utils
 import json
 
 
-class Model(object):
-    def to_json(self):
-        return self.__dict__
-
-
-class ModelList(list):
-    def to_json(self):
-        tmp = []
-        for i in self:
-            tmp.append(i.to_json())
-        return jsonify(tmp)
-
-
-class User(Model):
+class User(exchange.utils.model_utils.Model):
     permitted_fields = ['id', 'name']
 
     def __init__(self, ide, nome):
@@ -25,14 +13,6 @@ class User(Model):
 
     def delete(self):
         self.deleted = True
-
-# Essa função deve ir pra classe Model!
-    def check_permitted(self, data):
-        clean_data = {}
-        for key, value in data.items():
-            if key in User.permitted_fields:
-                clean_data[key] = value
-        return clean_data
 
 
 # Precisa achar um jeito de implementar o json_utils
