@@ -2,8 +2,6 @@ from flask import jsonify
 
 
 class Model(object):
-    def to_json(self):
-        return jsonify(self.__dict__)
 
     def check_permitted(self, data, permitted_fields):
         for key, value in data.items():
@@ -13,8 +11,9 @@ class Model(object):
 
 
 class ModelList(list):
+
     def to_json(self):
         tmp = []
         for i in self:
-            tmp.append(i.to_json())
+            tmp.append(i)
         return jsonify(tmp)

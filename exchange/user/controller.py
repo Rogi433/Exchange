@@ -1,27 +1,18 @@
 from flask import Flask, jsonify
 import exchange.user.model
 import exchange.utils.model_utils
-import json
-#DATA = [{"id": 1, "name": "Ernesto"}, {"id": 2, "name": "Arnaldo"}]
-
-DATA = exchange.utils.model_utils.ModelList()
-u1 = exchange.user.model.User(1, 'Ernesto')
-u2 = exchange.user.model.User(2, 'Arnaldo')
-u3 = exchange.user.model.User(3, 'Fred')
-
-DATA.append(u1.to_json())
-DATA.append(u2.to_json())
+DATA = exchange.user.model.DATA
 
 
 def get():
     return DATA.to_json()
 
 
-def get_one(var):
-    if isinstance(var, str):
+def get_one(dic):
+    if dic['name']:
         i = 0; j = len(DATA)+1
         while i < len(DATA):
-            if var == DATA[i]['name']:
+            if dic['name'] == DATA[i]['name']:
                 j = i
                 i = len(DATA)
             else:
@@ -29,10 +20,13 @@ def get_one(var):
         if j < len(DATA):
             return jsonify(DATA[j])
         else:
-            if int(var) <= len(DATA):
-                return jsonify(DATA[int(var) - 1])
-            else:
-                return False
+            return False
+    elif dic['id']:
+        var = int(dic['id'])
+        if var <= len(DATA):
+            return jsonify(DATA[var - 1])
+        else:
+            return False
     else:
         return False
 

@@ -14,6 +14,18 @@ class User(exchange.utils.model_utils.Model):
     def delete(self):
         self.deleted = True
 
+    def restore(self):
+        self.deleted = False
+
+
+DATA = exchange.utils.model_utils.ModelList()
+u1 = User(1, 'Ernesto')
+u2 = User(2, 'Arnaldo')
+u3 = User(3, 'Fred')
+
+DATA.append(u1.__dict__)
+DATA.append(u2.__dict__)
+DATA.append(u3.__dict__)
 
 # Precisa achar um jeito de implementar o json_utils
 # Precisa gerar um modelo genérico em model_utils

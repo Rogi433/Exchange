@@ -31,14 +31,8 @@ def get_users():
     import exchange.user.controller
 
     if request.method == 'GET':
-        if 'id' in request.args:
-            user = exchange.user.controller.get_one(request.args['id'])
-            if user:
-                return user
-            else:
-                return not_found(404)
-        elif 'name' in request.args:
-            user = exchange.user.controller.get_one(request.args['name'])
+        if request.args:
+            user = exchange.user.controller.get_one(request.args)
             if user:
                 return user
             else:
