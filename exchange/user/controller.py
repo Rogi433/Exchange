@@ -5,50 +5,36 @@ DATA = exchange.user.model.DATA
 
 
 def get():
-    return DATA.to_json()
+    return DATA
 
 
-def get_one(dic):
-    if dic['name']:
-        i = 0; j = len(DATA)+1
-        while i < len(DATA):
-            if dic['name'] == DATA[i]['name']:
-                j = i
-                i = len(DATA)
-            else:
-                i += 1
-        if j < len(DATA):
-            return jsonify(DATA[j])
-        else:
-            return False
-    elif dic['id']:
-        var = int(dic['id'])
-        if var <= len(DATA):
-            return jsonify(DATA[var - 1])
-        else:
-            return False
-    else:
-        return False
-
-
-# Implement later the delete protocol. When you create a new user you have to check the list for
-#other users that where deleted and the you update their information. Otherwise you just create
-#a new user the old way
+def get_one(args):
+    for item in DATA:
+        for key, value in args.items():
+            if str(getattr(item, key)) == value:
+                return item
+    return False
 
 
 def post(name):
+    for item in DATA:
+        if item.name == name:
+            if item.deleted:
+                item.restore()
+                return item
+            return False
+
     i = len(DATA)+1
-
     n_user = exchange.user.model.User(i, name)
-    DATA.append(n_user.to_json())
+    DATA.append(n_user)
 
-    return jsonify([{"id": i, "name": n_user.name}]), 201
+    return n_user
 
 
 def delete(id):
-    user = DATA[id]
-    user.delete()
-    return 200
+    print('oi')
+    DATA[id-1] = DATA.delete_user(DATA[id-1])
+    return DATA[id]
 
 # Entender porque quando eu faço um POST, depois se eu fizer GET de novo ele atualiza DATA
 #

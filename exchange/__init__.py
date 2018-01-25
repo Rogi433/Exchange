@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, render_template, request, abort, make_response
 from werkzeug.exceptions import default_exceptions, HTTPException
+import exchange.user.model as user_model
+import exchange.user.controller as user_controller
 import json
 
 app = Flask(__name__)
@@ -26,35 +28,35 @@ def root():
     return jsonify(ind)
 
 
-@app.route('/users', methods=['GET', 'POST', 'DELETE'])
+@app.route('/users', methods=['GET', 'POST'])
 def get_users():
-    import exchange.user.controller
 
     if request.method == 'GET':
         if request.args:
-            user = exchange.user.controller.get_one(request.args)
-            if user:
-                return user
-            else:
-                return not_found(404)
+            user = user_controller.get_one(request.args)
         else:
-            return exchange.user.controller.get(), 200
+            user = user_controller.get()
+        if user:
+            return user.to_json(), 200
+        else:
+            return not_found(404)
 
     elif request.method == 'POST':
-        import exchange.user.model
-        if not request.json and not exchange.user.model.User.check_permitted(request.json, exchange.user.model.User.permitted_fields):
+        permitted = user_model.User.check_permitted(request.json)
+        if not request.json and not permitted['name']:
             abort(400)
-        name = request.json['name']
+        name = permitted['name']
+        user = user_controller.post(name)
 
-        return exchange.user.controller.post(name)
+        if user:
+            return user.to_json(), 201
+        else:
+            return jsonify({'message': 'user already exist'}), 200
 
-    elif request.method == 'DELETE':
-        import exchange.user.model
-        if not request.json and not exchange.user.model.User.check_permitted(request.json, exchange.user.model.User.permitted_fields):
-            abort(400)
-        ide = request.json['id']
 
-        return exchange.user.controller.delete(ide)
+@app.route('/users/<int:id>', methods=['DELETE'])
+def delete_user(id):
+    return jsonify(user_controller.delete(id)), 200
 
 
 @app.route('/stocks', methods=['GET'])
@@ -62,19 +64,15 @@ def get_stocks():
     import exchange.stock.controller
 
     if 'id' in request.args:
-        stock = exchange.stock.controller.get_one(request.args['id'])
-        if stock:
-            return stock
-        else:
-            return not_found(404)
+        stock = exchange.stock.controller.get_one(int(request.args['id']))
     elif 'label' in request.args:
         stock = exchange.stock.controller.get_one(request.args['label'])
-        if stock:
-            return stock
-        else:
-            return not_found(404)
     else:
-        return exchange.stock.controller.get()
+        stock = exchange.stock.controller.get()
+    if stock:
+        return stock
+    else:
+        return not_found(404)
 
 
 ####################################################################################################
