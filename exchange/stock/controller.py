@@ -1,12 +1,15 @@
-from flask import jsonify
+import exchange.stock.model
+import exchange.utils.model_utils
+DATA = exchange.stock.model.DATA
 
 
 def get():
-# Gets all stocks and return as json and status 200
-    return 200
+    return DATA
 
 
-def get_one(var):
-# Gets one stocking receiving as parameter 'id' or 'label' and return as json and status 200 if it finds it
-#and return status 404 if it doesnt
-    return 200
+def get_one(args):
+    for item in DATA:
+        for key, value in args.items():
+            if str(getattr(item, key)) == value:
+                return item
+    return False

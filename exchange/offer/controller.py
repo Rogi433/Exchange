@@ -1,6 +1,13 @@
+import exchange.offer.model as offer_model
+
+DATA = offer_model.DATA
+
 def get():
-# Gets all offers and return them as json and status 200. Could think of implementing pagination
-    return 200
+    """
+        Gets all offers and return them.
+        Could think of implementing pagination later
+    """
+    return DATA
 
 
 def get_one(id_str):

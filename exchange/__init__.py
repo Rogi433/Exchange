@@ -1,29 +1,22 @@
 from flask import Flask, jsonify, render_template, request, abort, make_response
-from werkzeug.exceptions import default_exceptions, HTTPException
+from werkzeug.exceptions import HTTPException
 import exchange.user.model as user_model
 import exchange.user.controller as user_controller
+import exchange.stock.controller as stock_controller
+import exchange.offer.controller as offer_controller
 import json
 
 app = Flask(__name__)
-__all__ = ['make_json_app']
-
-
-@app.errorhandler(404)
-def not_found(error=None):
-    return make_response(jsonify({'error': 404, 'message': 'Not Found ' + request.url}), 404)
 
 
 @app.route('/', methods=['GET'])
 def root():
-    import exchange.user.controller
-    import exchange.stock.controller
-    import exchange.offer.controller
 
-    users = exchange.user.controller.get()
-    stocks = exchange.stock.controller.get()
-    offers = exchange.offer.controller.get()
+    users = user_controller.get()
+    stocks = stock_controller.get()
+    offers = offer_controller.get()
 
-    ind = {'users': users, 'stocks': stocks, 'offers': offers}
+    ind = {'users': users.to_json(), 'stocks': stocks.to_json(), 'offers': offers.to_json()}
 
     return jsonify(ind)
 
@@ -39,7 +32,7 @@ def get_users():
         if user:
             return user.to_json(), 200
         else:
-            return not_found(404)
+            return abort(404)
 
     elif request.method == 'POST':
         permitted = user_model.User.check_permitted(request.json)
@@ -54,25 +47,23 @@ def get_users():
             return jsonify({'message': 'user already exist'}), 200
 
 
-@app.route('/users/<int:id>', methods=['DELETE'])
+@app.route('/users/<string:id>', methods=['DELETE'])
 def delete_user(id):
-    return jsonify(user_controller.delete(id)), 200
+    return user_controller.delete(int(id)).to_json(), 200
 
 
 @app.route('/stocks', methods=['GET'])
-def get_stocks():
+def get_stock():
     import exchange.stock.controller
 
-    if 'id' in request.args:
-        stock = exchange.stock.controller.get_one(int(request.args['id']))
-    elif 'label' in request.args:
-        stock = exchange.stock.controller.get_one(request.args['label'])
+    if request.args:
+        stock = stock_controller.get_one(request.args)
     else:
-        stock = exchange.stock.controller.get()
+        stock = stock_controller.get()
     if stock:
-        return stock
+        return stock.to_json(), 200
     else:
-        return not_found(404)
+        return abort(404)
 
 
 ####################################################################################################
@@ -84,7 +75,7 @@ def get_or_post_offers():
         if 'id' in request.args:
             return exchange.offer.controller.get_one(request.args['id'])
 
-        return exchange.offer.controller.get()
+        return exchange.offer.controller.get().to_json(), 200
 
     elif request.method == 'POST':
         if not request.json or not request.json['stock'] or not request.json['type'] or not request.json['price'] or not request.json['quantity']:
@@ -94,7 +85,6 @@ def get_or_post_offers():
 
         offer = request.json
         return exchange.offer.controller.post(offer)
-
 
 
 @app.route('/offers/<int:id>', methods=['DELETE'])
@@ -124,19 +114,18 @@ def delete_offers(id):
 #    elif request.method == 'DELETE':
 #        return "ECHO: DELETE"
 
-def make_json_app(import_name, **kwargs):
-    def make_json_error(ex):
-        response = jsonify(message=str(ex))
-        response.status_code = (ex.code if isinstance(ex, HTTPException) else 500)
-        return response
-
-    app = Flask(import_name, **kwargs)
-
-    for code in default_exceptions.iterkeys():
-        app.error_handler_spec[None][code] = make_json_error
-
-    return app
-
 
 def run():
+    @app.errorhandler(Exception)
+    def handle_error(error):
+        response = jsonify(dict(error=str(error)))
+        response.status_code = 500
+        if hasattr(error, "code"):
+            response.status_code = error.code
+        return response
+
+    # for any http status code force json response
+    for cls in HTTPException.__subclasses__():
+        app.register_error_handler(cls, handle_error)
+
     app.run(debug=True)

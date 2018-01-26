@@ -1,5 +1,3 @@
-import json
-
 
 def default_to_json(object_to_convert):
     """Default function to convert an object to json
@@ -8,7 +6,7 @@ def default_to_json(object_to_convert):
         object_to_convert (object): Object to be converted to json
 
     Returns:
-        object: Representation of o to be used on the conversion
+        object: Representation of or to be used on the conversion
     """
     if hasattr(object_to_convert, "__dict__"):
         json_dict = {k: v for k, v in object_to_convert.__dict__.items() if k[0] != "_"}

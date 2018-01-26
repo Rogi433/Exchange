@@ -32,26 +32,9 @@ def post(name):
 
 
 def delete(id):
-    print('oi')
-    DATA[id-1] = DATA.delete_user(DATA[id-1])
-    return DATA[id]
+    DATA[id-1].delete()
+    return DATA[id-1]
 
-# Entender porque quando eu faço um POST, depois se eu fizer GET de novo ele atualiza DATA
-#
-# Como decidir os status http?
-# Tentar implementar o codigo de "response" para controlar o status:
-#    from flask import json
-#
-#    @app.route('/summary')
-#    def summary():
-#        data = make_summary()
-#        response = app.response_class(
-#            response=json.dumps(data),
-#            status=200,
-#            mimetype='application/json'
-#        )
-#        return response
-#
 # get_json(force=False, silent=False, cache=True)
 #   Parses the incoming JSON request data and returns it. By default this function will return None if the mimetype is not application/json but this can be overridden by the force parameter. If parsing fails the on_json_loading_failed() method on the request object will be invoked.
 #    Parameters:
@@ -69,9 +52,3 @@ def delete(id):
 #    If the mimetype is application/json this will contain the parsed JSON data. Otherwise this will be None.
 #
 #    The get_json() method should be used instead.
-
-#for item in data:
-#   for key, value in args.item():
-#       if hasattr(item, key) and item.get(key) == value:
-#           return item
-#       return False
