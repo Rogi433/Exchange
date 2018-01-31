@@ -1,6 +1,8 @@
 import exchange.offer.model as offer_model
+import exchange.utils.model_utils as model_utils
 
 DATA = offer_model.DATA
+
 
 def get():
     """
@@ -10,15 +12,27 @@ def get():
     return DATA
 
 
-def get_one(id_str):
-    id = int(id_str)
-# Gets one offer receiving its id (as string) as a parameter. Returns the offer as json and status 200 if it finds it
-#and returns status 404 if it doesnt
-    return 200
+def get_one(args):
+    if args['type']:
+        lista = model_utils.ModelList()
+        for item in DATA:
+            if args['type'] == item.type:
+                lista.append(item)
+        return lista
+    
+    for item in DATA:
+        for key, value in args.items():
+            if str(getattr(item, key)) == value:
+                return item
+    return False
 
 
 def post(dict):
 
     return 201
+
+def delete(offer_id):
+    
+    return 200
 
 #incomplete

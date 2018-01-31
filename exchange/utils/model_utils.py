@@ -1,4 +1,4 @@
-from flask import jsonify, current_app
+from flask import current_app
 import exchange.utils.json_utils as json_utils
 import json
 
@@ -8,7 +8,10 @@ class Model(object):
     usable_permitted_fields = []
 
     def to_json(self):
-        return jsonify(self.to_dict())
+        return current_app.response_class(
+            json.dumps(self, default=json_utils.default_to_json, sort_keys=True, indent=4),
+            mimetype=current_app.config['JSONIFY_MIMETYPE']
+        )
 
     def to_dict(self):
         return self.__dict__
@@ -19,7 +22,9 @@ class Model(object):
         for key, value in data.items():
             if key in cls.usable_permitted_fields:
                 model_fields[key] = value
-            return model_fields
+        if not len(data) == len(model_fields):
+            return False
+        return model_fields
 
 
 class ModelList(list):

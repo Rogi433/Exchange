@@ -1,10 +1,10 @@
-from flask import Flask, jsonify, render_template, request, abort, make_response
+from flask import Flask, jsonify, request, abort
 from werkzeug.exceptions import HTTPException
 import exchange.user.model as user_model
 import exchange.user.controller as user_controller
 import exchange.stock.controller as stock_controller
 import exchange.offer.controller as offer_controller
-import json
+import exchange.utils.model_utils as model_utils
 
 app = Flask(__name__)
 
@@ -15,14 +15,15 @@ def root():
     users = user_controller.get()
     stocks = stock_controller.get()
     offers = offer_controller.get()
+    ind = model_utils.ModelList()
 
-    ind = {'users': users.to_json(), 'stocks': stocks.to_json(), 'offers': offers.to_json()}
+    ind.append({'offers': offers, 'users': users, 'stocks': stocks})
 
-    return jsonify(ind)
+    return ind.to_json(), 200
 
 
 @app.route('/users', methods=['GET', 'POST'])
-def get_users():
+def get_or_post_users():
 
     if request.method == 'GET':
         if request.args:
@@ -36,7 +37,7 @@ def get_users():
 
     elif request.method == 'POST':
         permitted = user_model.User.check_permitted(request.json)
-        if not request.json and not permitted['name']:
+        if not request.json and not permitted:
             abort(400)
         name = permitted['name']
         user = user_controller.post(name)
@@ -66,53 +67,41 @@ def get_stock():
         return abort(404)
 
 
-####################################################################################################
 @app.route('/offers', methods=['GET', 'POST'])
 def get_or_post_offers():
     if request.method == 'GET':
         import exchange.offer.controller
 
-        if 'id' in request.args:
-            return exchange.offer.controller.get_one(request.args['id'])
+        if request.args:
+            offer = exchange.offer.controller.get_one(request.args)
+            if offer:
+                return offer.to_json(), 200
+            else:
+                return abort(404)
 
         return exchange.offer.controller.get().to_json(), 200
 
     elif request.method == 'POST':
-        if not request.json or not request.json['stock'] or not request.json['type'] or not request.json['price'] or not request.json['quantity']:
+        permitted = user_model.User.check_permitted(request.json)
+        if not request.json or not permitted:
             abort(400)
 
-        import exchange.offer.controller
-
         offer = request.json
-        return exchange.offer.controller.post(offer)
+        return offer_controller.post(offer)
 
 
 @app.route('/offers/<int:id>', methods=['DELETE'])
 def delete_offers(id):
     return 200
-####################################################################################################
 
+
+@app.route('/trades', methods=['GET'])
+def get_trades():
+    return 200
 
 # @app.route('/index')
 # def ind():
 #    return render_template('index.html')
-#
-# @app.route('/echo', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-# def api_echo():
-#    if request.method == 'GET':
-#        return "ECHO: GET\n"
-#
-#    elif request.method == 'POST':
-#        return "ECHO: POST\n"
-#
-#    elif request.method == 'PATCH':
-#        return "ECHO: PACTH\n"
-#
-#    elif request.method == 'PUT':
-#        return "ECHO: PUT\n"
-#
-#    elif request.method == 'DELETE':
-#        return "ECHO: DELETE"
 
 
 def run():

@@ -7,7 +7,7 @@ from random import randint
 
 class Offer(model_utils.Model):
     permitted_fields = ['id', 'stock', 'user', 'type', 'price', 'quantity', 'creation']
-    usable_permitted_fields = []
+    usable_permitted_fields = ['stock', 'price', 'type', 'quantity', 'user']
 
     def __init__(self, ide, stock, user, typ, price, quantity):
         self.id = ide
@@ -31,7 +31,7 @@ tipo = ['B','S']
 for i in range(0, 5):
     j = randint(0, 4)
     k = randint(0, 2)
-    h = randint(0,1)
-    o = randint(1,1000)
+    h = randint(0, 1)
+    o = randint(1, 1000)
     p = randint(1, 10)
     DATA.append(Offer(i, STOCK[j], USER[k], tipo[h], o, p))
