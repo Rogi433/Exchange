@@ -1,7 +1,12 @@
 ## Exchange
-Model for an exchange of assets. This project is for practicing knowledge in [...].
+This is my first project and I started it for practicing my knowledge in Back-End programming,
+Flask API, Orator and databases. My interests are generally in the fields of finance and programming, thus this project also
+helped me deepen my knowledge in them.
 
-## Título teste
+This is a model of an exchange of assets that deals with general problems of trading stocks. It could be used to further
+ implement a Front-End application.
+
+## Running instructions
 
 Esse texto é um teste.
 
@@ -9,4 +14,18 @@ Esse texto é um teste.
 sudo apt-get install git
 ```
 
+## Specifications
 
+bla
+
+#### Trading
+
+bla
+
+#### End-Points
+
+bla
+
+#### Files
+
+bla
