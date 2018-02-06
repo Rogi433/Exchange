@@ -40,6 +40,16 @@ class ModelList(list):
             mimetype=current_app.config['JSONIFY_MIMETYPE']
         )
 
+    def sort_price(self):
+        self.sort(key=lambda x: (x.price, x.creation))
+        return
+
+    def sort_date(self):
+        pass
+
+    def insert(self):
+        pass
+
     # def to_json(self):
         # tmp = []
         # for i in self:

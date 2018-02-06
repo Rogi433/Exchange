@@ -5,10 +5,10 @@ DATA = trade_model.DATA
 
 
 def get():
-    pass
+    return DATA
 
 
-def get_one():
+def get_one(args):
     pass
 
 

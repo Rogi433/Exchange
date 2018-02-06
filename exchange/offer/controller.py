@@ -27,9 +27,10 @@ def get_one(args):
     return False
 
 
-def post(dict):
+def post(args):
 
     return 201
+
 
 def delete(offer_id):
     

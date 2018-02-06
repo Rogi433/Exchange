@@ -4,6 +4,7 @@ import exchange.user.model as user_model
 import exchange.user.controller as user_controller
 import exchange.stock.controller as stock_controller
 import exchange.offer.controller as offer_controller
+import exchange.trade.controller as trade_controller
 import exchange.utils.model_utils as model_utils
 
 app = Flask(__name__)
@@ -97,7 +98,14 @@ def delete_offers(id):
 
 @app.route('/trades', methods=['GET'])
 def get_trades():
-    return 200
+    if request.args:
+        trade = trade_controller.get_one(request.args)
+        if trade:
+            return trade.to_json(), 200
+        else:
+            return abort(404)
+    else:
+        return trade_controller.get().to_json(), 200
 
 # @app.route('/index')
 # def ind():
