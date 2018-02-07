@@ -22,8 +22,8 @@ class Model(object):
         for key, value in data.items():
             if key in cls.usable_permitted_fields:
                 model_fields[key] = value
-        if not len(data) == len(model_fields):
-            return False
+        # if not len(data) == len(model_fields):
+        #     return False
         return model_fields
 
 
@@ -40,12 +40,13 @@ class ModelList(list):
             mimetype=current_app.config['JSONIFY_MIMETYPE']
         )
 
-    def sort_price(self):
+    def sort_buy(self):
         self.sort(key=lambda x: (x.price, x.creation))
         return
 
-    def sort_date(self):
-        pass
+    def sort_sell(self):
+        self.sort(key=lambda x: (x.price*(-1), x.creation))
+        return
 
     def insert(self):
         pass
@@ -55,3 +56,7 @@ class ModelList(list):
         # for i in self:
         #     tmp.append(i.to_dict())
         # return jsonify(tmp)
+
+
+class OfferQueue(list):
+    pass

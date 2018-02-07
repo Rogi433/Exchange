@@ -87,8 +87,8 @@ def get_or_post_offers():
         if not request.json or not permitted:
             abort(400)
 
-        offer = request.json
-        return offer_controller.post(offer)
+        # offer = request.json
+        return offer_controller.post(permitted)
 
 
 @app.route('/offers/<int:id>', methods=['DELETE'])
@@ -98,18 +98,35 @@ def delete_offers(id):
 
 @app.route('/trades', methods=['GET'])
 def get_trades():
+    # if not request.args['type']:
+    #     abort(400)
     if request.args:
         trade = trade_controller.get_one(request.args)
         if trade:
             return trade.to_json(), 200
         else:
-            return abort(404)
+            abort(404)
     else:
         return trade_controller.get().to_json(), 200
 
 # @app.route('/index')
 # def ind():
 #    return render_template('index.html')
+
+
+@app.route('/test')
+def test():
+    import tests.market as test
+    test.test_offers()
+
+    users = user_controller.get()
+    stocks = stock_controller.get()
+    offers = offer_controller.get()
+    ind = model_utils.ModelList()
+
+    ind.append({'offers': offers, 'users': users, 'stocks': stocks})
+
+    return ind.to_json(), 200
 
 
 def run():

@@ -21,7 +21,7 @@ class User(exchange.utils.model_utils.Model):
 
 DATA = exchange.utils.model_utils.ModelList()
 
-for j, i in enumerate(['Ernesto','Arnaldo','Fred']):
+for j, i in enumerate(['Ernesto', 'Arnaldo', 'Fred']):
     DATA.append(User(j+1, i))
 
 # Precisa achar um jeito de implementar o json_utils
