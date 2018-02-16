@@ -51,7 +51,12 @@ def get_or_post_users():
 
 @app.route('/users/<string:id>', methods=['DELETE'])
 def delete_user(id):
-    return user_controller.delete(int(id)).to_json(), 200
+    user = user_controller.delete(int(id))
+
+    if user:
+        return user.to_json(), 200
+    else:
+        abort(400)
 
 
 @app.route('/stocks', methods=['GET'])
@@ -117,7 +122,21 @@ def get_trades():
 @app.route('/test')
 def test():
     import tests.market as test
+    from exchange.offer.model import Offer
+
     test.test_offers()
+    print(' lista de Buy:')
+    for x in Offer.BUY:
+        print(x)
+        print(x.price)
+        print(x.quantity)
+        print('')
+    print(' lista de Sell:')
+    for x in Offer.SELL:
+        print(x)
+        print(x.price)
+        print(x.quantity)
+        print('')
 
     users = user_controller.get()
     stocks = stock_controller.get()
@@ -143,3 +162,5 @@ def run():
         app.register_error_handler(cls, handle_error)
 
     app.run(debug=True)
+
+# todo: create a "manual" for the end-points to facilitate tests

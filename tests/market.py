@@ -2,7 +2,6 @@
     This file is used to simulate a market to test the trade algorithm
 """
 import exchange.stock.model as stock_model
-import exchange.offer.model as offer_model
 import exchange.offer.controller as offer_controller
 import exchange.user.model as user_model
 from random import randint, uniform
@@ -14,7 +13,7 @@ side = ['B', 'S']
 
 
 def test_offers():
-    for _ in range(0, 5):
+    for _ in range(0, 10):
         json = {
             'stock': {
                 'label': STOCK[randint(0, 4)].label
@@ -30,3 +29,50 @@ def test_offers():
 
         # todo: try to make this work sending the user id
         offer_controller.post(json)
+
+
+def test_offers2():
+    json = {
+        'stock': {
+            'label': STOCK[0].label
+        },
+        'user': {
+            'name': USER[0].name
+        },
+        'side': side[1],
+        'price': 100,
+        'quantity': 10,
+        'type': 'limit',
+    }
+
+    offer_controller.post(json)
+
+    json = {
+        'stock': {
+            'label': STOCK[0].label
+        },
+        'user': {
+            'name': USER[0].name
+        },
+        'side': side[1],
+        'price': 50,
+        'quantity': 10,
+        'type': 'limit',
+    }
+
+    offer_controller.post(json)
+
+    json = {
+        'stock': {
+            'label': STOCK[0].label
+        },
+        'user': {
+            'name': USER[0].name
+        },
+        'side': side[0],
+        'price': 90,
+        'quantity': 10,
+        'type': 'limit',
+    }
+
+    offer_controller.post(json)

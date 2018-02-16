@@ -24,16 +24,26 @@ def post(name):
                 return item
             return False
 
-    i = len(DATA)+1
-    n_user = exchange.user.model.User(i, name)
+    n_user = exchange.user.model.User(name)
     DATA.append(n_user)
 
     return n_user
 
 
 def delete(id):
-    DATA[id-1].delete()
-    return DATA[id-1]
+    item = 0
+    chose = False
+    while item < len(DATA):
+        if DATA[item].id == id:
+            chose = item
+            item = len(DATA)
+        item += 1
+
+    if chose:
+        DATA[chose].delete()
+        return DATA[chose]
+    else:
+        return False
 
 # get_json(force=False, silent=False, cache=True)
 #   Parses the incoming JSON request data and returns it. By default this function will return None if the mimetype is not application/json but this can be overridden by the force parameter. If parsing fails the on_json_loading_failed() method on the request object will be invoked.

@@ -41,16 +41,17 @@ class ModelList(list):
         )
 
     def sort_buy(self):
-        self.sort(key=lambda x: (x.price, x.creation))
+        self.sort(key=lambda x: (x.price*(-1), x.creation))
         return
 
     def sort_sell(self):
-        self.sort(key=lambda x: (x.price*(-1), x.creation))
+        self.sort(key=lambda x: (x.price, x.creation))
         return
 
     def insert(self):
         pass
 
+    #todo: create the function insert, so you can insert
     # def to_json(self):
         # tmp = []
         # for i in self:

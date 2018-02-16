@@ -58,7 +58,10 @@ def get_one(args):
 
 
 def post(json):
-    print(json)
+    print(' price ', json['price'], ' side ', json['side'], ' stock ', json['stock'], ' quantity ', json['quantity'])
+
+    # todo: test if market orders are working
+
     if json['type'] == 'market':
         stock = stock_controller.get_one(json['stock'])
 
@@ -66,7 +69,8 @@ def post(json):
 
         if user and stock and json['side']:
             offer = Offer(stock, user, json['side'], float('inf'), json['quantity'])
-            return trade.trade(offer)
+            trade.trade(offer)
+            return offer
         else:
             return False
     else:
@@ -74,7 +78,8 @@ def post(json):
         user = user_controller.get_one(json['user'])
         if user and stock and json['side']:
             offer = Offer(stock, user, json['side'], json['price'], json['quantity'])
-            return trade.trade(offer)
+            trade.trade(offer)
+            return offer
         else:
             return False
 
