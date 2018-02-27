@@ -88,16 +88,18 @@ def get_or_post_offers():
         return exchange.offer.controller.get().to_json(), 200
 
     elif request.method == 'POST':
-        permitted = user_model.User.check_permitted(request.json)
-        if not request.json or not permitted:
-            abort(400)
+        # permitted = user_model.User.check_permitted(request.json)
+        # if not request.json or not permitted:
+        #     abort(400)
+        # todo: implement a check_permitted process to this endpoint
 
         # offer = request.json
-        return offer_controller.post(permitted)
+        return offer_controller.post(request.json).to_json()
 
 
 @app.route('/offers/<int:id>', methods=['DELETE'])
 def delete_offers(id):
+    # todo: finish this endpoint
     return 200
 
 
@@ -127,13 +129,11 @@ def test():
     test.test_offers()
     print(' lista de Buy:')
     for x in Offer.BUY:
-        print(x)
         print(x.price)
         print(x.quantity)
         print('')
     print(' lista de Sell:')
     for x in Offer.SELL:
-        print(x)
         print(x.price)
         print(x.quantity)
         print('')

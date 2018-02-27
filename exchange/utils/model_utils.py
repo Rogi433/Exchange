@@ -48,10 +48,12 @@ class ModelList(list):
         self.sort(key=lambda x: (x.price, x.creation))
         return
 
-    def insert(self):
-        pass
+    # def insert(self):
+    #     """
+    #         This function is for inserting a object in the right place in an ordered list
+    #     """
+    #     pass
 
-    #todo: create the function insert, so you can insert
     # def to_json(self):
         # tmp = []
         # for i in self:

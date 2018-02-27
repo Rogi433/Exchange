@@ -3,6 +3,7 @@ import exchange.utils.model_utils as model_utils
 import exchange.stock.controller as stock_controller
 import exchange.user.controller as user_controller
 import exchange.trade.allocation as trade
+import math
 
 
 DATA = model_utils.ModelList()
@@ -19,6 +20,8 @@ def get():
 
 
 def get_one(args):
+    # todo: test if this function works for all cases
+
     if args['side'] == 'B':
         if args['type']:
             lista = model_utils.ModelList()
@@ -60,16 +63,20 @@ def get_one(args):
 def post(json):
     print(' price ', json['price'], ' side ', json['side'], ' stock ', json['stock'], ' quantity ', json['quantity'])
 
-    # todo: test if market orders are working
-
     if json['type'] == 'market':
         stock = stock_controller.get_one(json['stock'])
 
         user = user_controller.get_one(json['user'])
 
         if user and stock and json['side']:
-            offer = Offer(stock, user, json['side'], float('inf'), json['quantity'])
+            if json['side'] == 'S':
+                p = 0
+            else:
+                p = math.inf
+            offer = Offer(stock, user, json['side'], p, json['quantity'])
             trade.trade(offer)
+            if json['side'] == 'B':
+                offer.price = 999999999999999
             return offer
         else:
             return False

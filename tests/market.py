@@ -27,7 +27,6 @@ def test_offers():
             'type': 'limit',
         }
 
-        # todo: try to make this work sending the user id
         offer_controller.post(json)
 
 

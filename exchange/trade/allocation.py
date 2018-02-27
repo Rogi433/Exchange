@@ -48,7 +48,7 @@ def trade(offer):
         else:
             Offer.BUY.append(offer)
             Offer.BUY.sort_buy()
-            print('arquiva na lita de Bids')
+            print('arquiva na lista de Bids')
 
     else:
         if Offer.BUY and Offer.BUY[0].price >= offer.price:
