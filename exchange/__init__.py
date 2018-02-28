@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, render_template
 from werkzeug.exceptions import HTTPException
 import exchange.user.model as user_model
 import exchange.user.controller as user_controller
@@ -7,7 +7,7 @@ import exchange.offer.controller as offer_controller
 import exchange.trade.controller as trade_controller
 import exchange.utils.model_utils as model_utils
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static', static_url_path='')
 
 
 @app.route('/', methods=['GET'])
@@ -61,7 +61,6 @@ def delete_user(id):
 
 @app.route('/stocks', methods=['GET'])
 def get_stock():
-    import exchange.stock.controller
 
     if request.args:
         stock = stock_controller.get_one(request.args)
@@ -116,9 +115,10 @@ def get_trades():
     else:
         return trade_controller.get().to_json(), 200
 
-# @app.route('/index')
-# def ind():
-#    return render_template('index.html')
+
+@app.route('/index')
+def ind():
+    return render_template('index.html',)
 
 
 @app.route('/test')
@@ -131,12 +131,12 @@ def test():
     for x in Offer.BUY:
         print(x.price)
         print(x.quantity)
-        print('')
+    print('')
     print(' lista de Sell:')
     for x in Offer.SELL:
         print(x.price)
         print(x.quantity)
-        print('')
+    print('')
 
     users = user_controller.get()
     stocks = stock_controller.get()
