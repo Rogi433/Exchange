@@ -12,6 +12,16 @@ app = Flask(__name__, static_folder='../static', static_url_path='')
 
 @app.route('/', methods=['GET'])
 def root():
+    return app.send_static_file('index.html')
+
+
+# @app.route('/swagger')
+# def swag():
+#     return app.send_static_file()
+
+
+@app.route('/all', methods=['GET'])
+def all():
 
     users = user_controller.get()
     stocks = stock_controller.get()
@@ -116,11 +126,6 @@ def get_trades():
         return trade_controller.get().to_json(), 200
 
 
-@app.route('/index')
-def ind():
-    return render_template('index.html',)
-
-
 @app.route('/test')
 def test():
     import tests.market as test
@@ -164,3 +169,5 @@ def run():
     app.run(debug=True)
 
 # todo: create a "manual" for the end-points to facilitate tests
+
+# todo: delete de Z folder in static after finishing the swagger.json file
