@@ -10,7 +10,7 @@ import exchange.utils.model_utils as model_utils
 app = Flask(__name__, static_folder='../static', static_url_path='')
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def root():
     return app.send_static_file('index.html')
 
@@ -26,9 +26,10 @@ def all():
     users = user_controller.get()
     stocks = stock_controller.get()
     offers = offer_controller.get()
+    trades = trade_controller.get()
     ind = model_utils.ModelList()
 
-    ind.append({'offers': offers, 'users': users, 'stocks': stocks})
+    ind.append({'offers': offers, 'users': users, 'stocks': stocks, 'trades': trades})
 
     return ind.to_json(), 200
 
@@ -56,12 +57,12 @@ def get_or_post_users():
         if user:
             return user.to_json(), 201
         else:
-            return jsonify({'message': 'user already exist'}), 200
+            return jsonify({'message': 'user already exists'}), 200
 
 
 @app.route('/users/<string:id>', methods=['DELETE'])
 def delete_user(id):
-    user = user_controller.delete(int(id))
+    user = user_controller.delete(id)
 
     if user:
         return user.to_json(), 200
