@@ -53,9 +53,16 @@
         ],
         "parameters": [
           {
-            "name": "identifier",
+            "name": "id",
             "in": "query",
-            "description": "Id or name to search for a especific user",
+            "description": "Id to search for a specific user",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to search for a specific user",
             "type": "string",
             "required": false
           }
