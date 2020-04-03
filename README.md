@@ -1,10 +1,4 @@
 ## Exchange
-Model for an exchange of assets. This project is for practicing knowledge in [...].
+Model for an exchange of assets. This project is for practicing knowledge in backend python with Flask microframework.
 
-## Título teste
-
-```
-sudo apt-get install git
-```
-
-
+## Still work in progress...
